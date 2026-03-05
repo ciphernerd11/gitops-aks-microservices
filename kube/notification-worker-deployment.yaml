@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-worker
+  labels:
+    app.kubernetes.io/name: notification-worker
+    app.kubernetes.io/part-of: disaster-relief
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: notification-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: notification-worker
+        app.kubernetes.io/part-of: disaster-relief
+        app.kubernetes.io/component: worker
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: notification-worker
+          image: ACR_NAME.azurecr.io/notification-worker:latest
+          env:
+            - name: ALERT_API_URL
+              value: http://alert-api-service:8000
+            - name: POLL_INTERVAL
+              value: "10s"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 64Mi

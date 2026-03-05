@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: disaster-relief-platform
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: disaster-relief
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/<YOUR_ORG>/<YOUR_REPO>.git   # ← Update with your repo URL
+    targetRevision: main
+    path: kube
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
