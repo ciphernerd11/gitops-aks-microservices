@@ -1,0 +1,65 @@
+name: Application CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'kube/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+
+env:
+  ACR_NAME: ${{ secrets.ACR_NAME }}
+  REGISTRY: ${{ secrets.ACR_NAME }}.azurecr.io
+
+jobs:
+  build-push-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        run: az acr login --name $ACR_NAME
+
+      # --- Build & Push Microservices ---
+      - name: Build & Push Images
+        run: |
+          for svc in frontend alert-api resource-api notification-worker; do
+            docker build -t $REGISTRY/$svc:${{ github.sha }} ./src/$svc
+            docker push $REGISTRY/$svc:${{ github.sha }}
+          done
+
+      # --- Update Kubernetes manifests with new image tags ---
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update image tags in kube/ manifests
+        run: |
+          TAG="${{ github.sha }}"
+          for svc in frontend alert-api resource-api notification-worker; do
+            yq -i '(select(.kind == "Deployment") | .spec.template.spec.containers[0].image) = "'$REGISTRY'/'$svc':'$TAG'"' kube/$svc-deployment.yaml
+          done
+
+      - name: Commit & push updated manifests
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kube/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "ci: update image tags to ${{ github.sha }}"
+          git push

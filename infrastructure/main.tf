@@ -12,13 +12,13 @@ terraform {
     }
   }
 
-  # Uncomment and configure for remote state (recommended for teams)
-  # backend "azurerm" {
-  #   resource_group_name  = "tfstate-rg"
-  #   storage_account_name = "tfstateaccount"
-  #   container_name       = "tfstate"
-  #   key                  = "disaster-relief.tfstate"
-  # }
+  #Uncomment and configure for remote state (recommended for teams)
+  backend "azurerm" {
+    resource_group_name  = "tfstate-rg"
+    storage_account_name = "disasterrelieftfstate123"
+    container_name       = "tfstate"
+    key                  = "disaster-relief.tfstate"
+  }
 }
 
 provider "azurerm" {
