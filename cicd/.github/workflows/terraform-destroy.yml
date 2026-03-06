@@ -1,0 +1,38 @@
+name: Infrastructure CI/CD Destroy stage
+
+# This workflow only runs when triggered manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: 'Type "yes" to confirm destruction of all infrastructure'
+        requried: true
+        default: "no"
+
+env:
+  ARM_CLIENT_ID: ${{secrets.AZURE_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.AZURE_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.AZURE_TENANT_ID}}
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+    #only run the job if the user explicitly typed "yes"
+    if: ${{github.event.inputs.confirm_destroy == 'yes'}}
+    defaults:
+      run:
+        working-directory: ./infrastructure
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+      - name: Terraform Init
+        run: terraform init
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
