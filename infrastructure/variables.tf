@@ -49,3 +49,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "vnet_cidr" {
+  description = "CIDR block for the Virtual Network"
+  type        = list(string)
+  default     = ["10.0.0.0/8"]
+}
+
+variable "subnet_cidr" {
+  description = "CIDR block for the AKS Subnet"
+  type        = list(string)
+  default     = ["10.240.0.0/16"]
+}

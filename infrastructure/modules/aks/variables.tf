@@ -33,6 +33,16 @@ variable "acr_id" {
   type        = string
 }
 
+variable "vnet_subnet_id" {
+  description = "The ID of the Subnet where the AKS Cluster should be deployed"
+  type        = string
+}
+
+variable "log_analytics_workspace_id" {
+  description = "The ID of the Log Analytics Workspace for OMS Agent"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags for the AKS cluster"
   type        = map(string)
