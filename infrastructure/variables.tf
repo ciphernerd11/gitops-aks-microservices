@@ -17,7 +17,7 @@ variable "environment" {
 variable "location" {
   description = "Azure region for all resources"
   type        = string
-  default     = "East US"
+  default     = "Central India"
 }
 
 variable "aks_node_count" {
@@ -35,7 +35,7 @@ variable "aks_node_vm_size" {
 variable "kubernetes_version" {
   description = "Kubernetes version for the AKS cluster"
   type        = string
-  default     = "1.31"
+  default     = "1.35"
 }
 
 variable "acr_sku" {
