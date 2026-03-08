@@ -37,7 +37,7 @@ jobs:
       # --- Build & Push Microservices ---
       - name: Build & Push Images
         run: |
-          for svc in frontend alert-api resource-api notification-worker; do
+          for svc in frontend alert-api resource-api notification-worker alert-generator; do
             docker build -t $REGISTRY/$svc:${{ github.sha }} ./src/$svc
             docker push $REGISTRY/$svc:${{ github.sha }}
           done
@@ -51,8 +51,13 @@ jobs:
       - name: Update image tags in kube/ manifests
         run: |
           TAG="${{ github.sha }}"
-          for svc in frontend alert-api resource-api notification-worker; do
-            yq -i '(select(.kind == "Deployment") | .spec.template.spec.containers[0].image) = "'$REGISTRY'/'$svc':'$TAG'"' kube/$svc-deployment.yaml
+          for svc in frontend alert-api resource-api notification-worker alert-generator; do
+            yq -i '(select(.kind == "Deployment" or .kind == "CronJob") | .spec.jobTemplate.spec.template.spec.containers[0].image // (select(.kind == "Deployment") | .spec.template.spec.containers[0].image)) = "'$REGISTRY'/'$svc':'$TAG'"' kube/$svc-deployment.yaml 2>/dev/null || true
+            if [ "$svc" == "alert-generator" ]; then
+                yq -i '.spec.jobTemplate.spec.template.spec.containers[0].image = "'$REGISTRY'/'$svc':'$TAG'"' kube/alert-generator-cronjob.yaml
+            else
+                yq -i '.spec.template.spec.containers[0].image = "'$REGISTRY'/'$svc':'$TAG'"' kube/$svc-deployment.yaml
+            fi
           done
 
       - name: Commit & push updated manifests

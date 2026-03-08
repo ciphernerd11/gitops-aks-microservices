@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: alert-generator
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: alert-generator
+            image: acrdisasterreliefdev.azurecr.io/alert-generator:latest
+            env:
+            - name: API_URL
+              value: "http://alert-api-service:8000/alerts"
+          restartPolicy: OnFailure
