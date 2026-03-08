@@ -4,7 +4,7 @@
 
 project_name       = "disaster-relief"
 environment        = "qa"
-location           = "Central India"
+location           = "East US"
 aks_node_count     = 2
 aks_node_vm_size   = "Standard_B2s_v2"
 kubernetes_version = "1.33.7"
