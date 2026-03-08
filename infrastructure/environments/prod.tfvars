@@ -7,7 +7,7 @@ environment        = "prod"
 location           = "Central India"
 aks_node_count     = 3
 aks_node_vm_size   = "Standard_B2s"
-kubernetes_version = "1.30.100"
+kubernetes_version = "1.33.7"
 acr_sku            = "Basic"
 
 vnet_cidr        = ["10.3.0.0/16"]
