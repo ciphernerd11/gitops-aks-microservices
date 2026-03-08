@@ -6,7 +6,7 @@ project_name       = "disaster-relief"
 environment        = "uat"
 location           = "East US"
 aks_node_count     = 2
-aks_node_vm_size   = "Standard_B2s_v2"
+aks_node_vm_size   = "Standard_D2s_v3"
 kubernetes_version = "1.33.7"
 acr_sku            = "Basic"
 
