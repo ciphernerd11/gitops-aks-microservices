@@ -33,10 +33,19 @@ resource "azurerm_key_vault" "kv" {
 
 data "azurerm_client_config" "current" {}
 
+resource "azurerm_role_assignment" "terraform_kv_admin" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
 resource "azurerm_key_vault_secret" "postgres_password" {
   name         = "postgres-password"
-  value        = "changeme-in-production" # In a real scenario, this would be generated or passed securely
+  value        = "changeme-in-production"
   key_vault_id = azurerm_key_vault.kv.id
+
+  # Ensure permissions are granted before trying to manage secrets
+  depends_on = [azurerm_role_assignment.terraform_kv_admin]
 }
 
 output "id" {
