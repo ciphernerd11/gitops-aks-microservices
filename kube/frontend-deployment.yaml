@@ -56,7 +56,7 @@ metadata:
     app.kubernetes.io/name: frontend
     app.kubernetes.io/part-of: disaster-relief
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: frontend
   ports:
