@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: acrdisasterreliefdev.azurecr.io/frontend:ceadc7d482069b48eca339c48dc4f5602017f2c3
+          image: acrdisasterreliefdev.azurecr.io/frontend:77f25153f6e1aafecfb748fbae2d5afbfac58077
           ports:
             - containerPort: 80
               protocol: TCP
@@ -61,10 +61,6 @@ spec:
   type: ClusterIP
   selector:
     app.kubernetes.io/name: frontend
-  ports:
-    - port: 80
-      targetPort: 80
-      protocol: TCP
   ports:
     - port: 80
       targetPort: 80
