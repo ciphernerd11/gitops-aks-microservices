@@ -72,12 +72,6 @@ spec:
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - image: null
 ---
 apiVersion: v1
 kind: Service
@@ -94,7 +88,3 @@ spec:
     - port: 3000
       targetPort: 3000
       protocol: TCP
-  template:
-    spec:
-      containers:
-        - image: acrdisasterreliefdev.azurecr.io/resource-api:ceadc7d482069b48eca339c48dc4f5602017f2c3
