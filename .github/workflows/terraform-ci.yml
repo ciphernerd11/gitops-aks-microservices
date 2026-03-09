@@ -46,11 +46,15 @@ jobs:
           ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
           terraform init -backend-config="key=${ENV_NAME}.tfstate"
 
+      - name: Get Public IP
+        id: ip
+        run: echo "ipv4=$(curl -s https://api.ipify.org)" >> $GITHUB_OUTPUT
+
       - name: Terraform Plan
         id: plan
         run: |
           ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
-          terraform plan -var-file="environments/$ENV_NAME.tfvars" -no-color
+          terraform plan -var-file="environments/$ENV_NAME.tfvars" -var="allowed_ips=[\"${{ steps.ip.outputs.ipv4 }}\"]" -no-color
 
   terraform-apply:
     name: 'Terraform Apply'
@@ -76,5 +80,9 @@ jobs:
           ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
           terraform init -backend-config="key=${ENV_NAME}.tfstate"
 
+      - name: Get Public IP
+        id: ip
+        run: echo "ipv4=$(curl -s https://api.ipify.org)" >> $GITHUB_OUTPUT
+
       - name: Terraform Apply
-        run: terraform apply -var-file="environments/${{ github.event.inputs.environment }}.tfvars" -auto-approve -input=false
+        run: terraform apply -var-file="environments/${{ github.event.inputs.environment }}.tfvars" -var="allowed_ips=[\"${{ steps.ip.outputs.ipv4 }}\"]" -auto-approve -input=false

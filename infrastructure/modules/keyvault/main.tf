@@ -15,6 +15,11 @@ variable "app_subnet_ids" {
   default = []
 }
 
+variable "allowed_ips" {
+  type    = list(string)
+  default = []
+}
+
 variable "tags" {
   type = map(string)
 }
@@ -36,9 +41,12 @@ resource "azurerm_key_vault" "kv" {
   # Hardening KV with Network ACLs
   network_acls {
     bypass                     = "AzureServices"
-    default_action             = length(var.app_subnet_ids) > 0 ? "Deny" : "Allow"
+    default_action             = (length(var.app_subnet_ids) > 0 || length(var.allowed_ips) > 0) ? "Deny" : "Allow"
     virtual_network_subnet_ids = var.app_subnet_ids
+    ip_rules                   = var.allowed_ips
   }
+
+  public_network_access_enabled = true # Required to allow traffic to reach the firewall rules
 
   tags = var.tags
 }

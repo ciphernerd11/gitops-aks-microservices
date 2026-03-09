@@ -53,6 +53,7 @@ module "log_analytics" {
   location            = azurerm_resource_group.main.location
   # Passing subnet IDs for Network ACLs
   app_subnet_ids    = module.network.app_subnet_ids
+  allowed_ips       = var.allowed_ips
   tags                = local.common_tags
 }
 
