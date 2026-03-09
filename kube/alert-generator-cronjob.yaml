@@ -4,6 +4,8 @@ metadata:
   name: alert-generator
 spec:
   schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
