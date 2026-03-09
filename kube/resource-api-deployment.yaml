@@ -53,13 +53,6 @@ spec:
             - name: secrets-store-inline
               mountPath: "/mnt/secrets-store"
               readOnly: true
-      volumes:
-        - name: secrets-store-inline
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: "postgres-kv-sync"
           livenessProbe:
             httpGet:
               path: /health
@@ -72,6 +65,13 @@ spec:
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "postgres-kv-sync"
 ---
 apiVersion: v1
 kind: Service
@@ -92,7 +92,3 @@ spec:
     - port: 3000
       targetPort: 3000
       protocol: TCP
-  template:
-    spec:
-      containers:
-        - image: acrdisasterreliefdev.azurecr.io/resource-api:6c0d0460990bdbde9069209d7656834db7d0a4d7
