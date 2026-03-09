@@ -53,6 +53,13 @@ resource "azurerm_network_security_group" "db" {
   tags                = var.tags
 }
 
+resource "azurerm_network_security_group" "gateway" {
+  name                = "nsg-gw-${var.resource_prefix}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags                = var.tags
+}
+
 # Association
 resource "azurerm_subnet_network_security_group_association" "app" {
   count                     = length(var.app_subnets_cidr)
@@ -64,6 +71,11 @@ resource "azurerm_subnet_network_security_group_association" "db" {
   count                     = length(var.db_subnets_cidr)
   subnet_id                 = azurerm_subnet.db[count.index].id
   network_security_group_id = azurerm_network_security_group.db.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "gateway" {
+  subnet_id                 = azurerm_subnet.gateway.id
+  network_security_group_id = azurerm_network_security_group.gateway.id
 }
 
 # ─────────────────────────────────────────────────────
@@ -134,3 +146,36 @@ resource "azurerm_network_security_rule" "deny_all_to_db" {
   network_security_group_name = azurerm_network_security_group.db.name
 }
 
+# ─────────────────────────────────────────────────────
+# Security Rules - Gateway Tier
+# ─────────────────────────────────────────────────────
+
+# Allow Internet traffic for Web
+resource "azurerm_network_security_rule" "allow_web" {
+  name                        = "AllowWebInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_ranges     = ["80", "443"]
+  source_address_prefix       = "Internet"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.gateway.name
+}
+
+# Allow Gateway Manager (MANDATORY for App Gateway V2)
+resource "azurerm_network_security_rule" "allow_gateway_manager" {
+  name                        = "AllowGatewayManagerInbound"
+  priority                    = 200
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "65200-65535"
+  source_address_prefix       = "GatewayManager"
+  destination_address_prefix  = "*"
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = azurerm_network_security_group.gateway.name
+}
