@@ -92,8 +92,12 @@ def _redis_setex(key: str, ttl: int, value: str):
 class AlertCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=256)
     severity: str = Field(..., pattern="^(critical|high|medium|low)$")
+    category: str = Field(default="General", min_length=1, max_length=100)
     location: str = Field(..., min_length=1, max_length=256)
     description: str = Field(default="", max_length=2048)
+    latitude: Optional[float] = Field(None, ge=-90, le=90)
+    longitude: Optional[float] = Field(None, ge=-180, le=180)
+    active: bool = Field(default=True)
 
 
 class Alert(AlertCreate):

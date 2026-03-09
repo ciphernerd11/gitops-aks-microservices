@@ -58,7 +58,7 @@ function App() {
                     <div className="logo">
                         <span className="logo-icon">🚨</span>
                         <div>
-                            <h1>Disaster Relief HQ</h1>
+                            <h1>Disaster Relief HQ <span className="simulation-badge">SIMULATION MODE</span></h1>
                             <p className="subtitle">Real-Time Coordination Dashboard</p>
                         </div>
                     </div>
@@ -101,14 +101,22 @@ function App() {
                                                     style={{ background: severityColors[a.severity] || '#94a3b8' }}
                                                 />
                                                 <div className="item-content">
-                                                    <strong>{a.title || 'Untitled Alert'}</strong>
-                                                    <span className="meta">
-                                                        {a.location || 'Unknown location'} · {a.severity || 'N/A'}
-                                                    </span>
+                                                    <div className="item-header">
+                                                        <span className="category-tag">{a.category || 'Emergency'}</span>
+                                                        <strong>{a.title || 'Untitled Alert'}</strong>
+                                                    </div>
+                                                    <p className="description">{a.description}</p>
+                                                    <div className="meta">
+                                                        <span>📍 {a.location}</span>
+                                                        {a.latitude && <span>({a.latitude.toFixed(4)}, {a.longitude.toFixed(4)})</span>}
+                                                        <span className={`status-pill ${a.active ? 'active' : 'resolved'}`}>
+                                                            {a.active ? '● ACTIVE' : '✓ RESOLVED'}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                                 <time className="timestamp">
                                                     {a.created_at
-                                                        ? new Date(a.created_at).toLocaleString()
+                                                        ? new Date(a.created_at).toLocaleTimeString()
                                                         : '—'}
                                                 </time>
                                             </li>
