@@ -47,8 +47,6 @@ spec:
               port: 80
             initialDelaySeconds: 3
             periodSeconds: 10
-            initialDelaySeconds: 3
-            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
@@ -65,7 +63,3 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
-  template:
-    spec:
-      containers:
-        - image: acrdisasterreliefdev.azurecr.io/frontend:86cc60a0b579c7f6eaa7e42cc9152981ad686891
