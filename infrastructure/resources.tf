@@ -1,5 +1,5 @@
 # ─────────────────────────────────────────────────────
-# Local Values
+# Local Values & Shared Tags
 # ─────────────────────────────────────────────────────
 
 locals {
@@ -13,7 +13,7 @@ locals {
 }
 
 # ─────────────────────────────────────────────────────
-# 1. Resource Group
+# 1. Base Infrastructure (Group & Network)
 # ─────────────────────────────────────────────────────
 
 resource "azurerm_resource_group" "main" {
@@ -21,10 +21,6 @@ resource "azurerm_resource_group" "main" {
   location = var.location
   tags     = local.common_tags
 }
-
-# ─────────────────────────────────────────────────────
-# 2. Network Module
-# ─────────────────────────────────────────────────────
 
 module "network" {
   source              = "./modules/network"
@@ -39,7 +35,7 @@ module "network" {
 }
 
 # ─────────────────────────────────────────────────────
-# 3. Log Analytics Module
+# 2. Supporting Services (Governance & Security)
 # ─────────────────────────────────────────────────────
 
 module "log_analytics" {
@@ -50,8 +46,18 @@ module "log_analytics" {
   tags                = local.common_tags
 }
 
+  module "keyvault" {
+  source              = "./modules/keyvault"
+  resource_prefix     = local.resource_prefix
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  # Passing subnet IDs for Network ACLs
+  app_subnet_ids    = module.network.app_subnet_ids
+  tags                = local.common_tags
+}
+
 # ─────────────────────────────────────────────────────
-# 4. Azure Container Registry (ACR) Module
+# 3. Application Hosting (Registry & Cluster)
 # ─────────────────────────────────────────────────────
 
 module "acr" {
@@ -62,22 +68,6 @@ module "acr" {
   acr_sku             = var.acr_sku
   tags                = local.common_tags
 }
-
-# ─────────────────────────────────────────────────────
-# 5. Azure Key Vault Module
-# ─────────────────────────────────────────────────────
-
-module "keyvault" {
-  source              = "./modules/keyvault"
-  resource_prefix     = local.resource_prefix
-  resource_group_name = azurerm_resource_group.main.name
-  location            = azurerm_resource_group.main.location
-  tags                = local.common_tags
-}
-
-# ─────────────────────────────────────────────────────
-# 6. Azure Kubernetes Service (AKS) Module
-# ─────────────────────────────────────────────────────
 
 module "aks" {
   source                     = "./modules/aks"
@@ -94,3 +84,4 @@ module "aks" {
   log_analytics_workspace_id = module.log_analytics.workspace_id
   tags                       = local.common_tags
 }
+

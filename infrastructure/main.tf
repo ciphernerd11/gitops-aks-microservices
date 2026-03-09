@@ -17,7 +17,7 @@ terraform {
     resource_group_name  = "tfstate-rg"
     storage_account_name = "disasterrelieftfstate123"
     container_name       = "tfstate"
-    key                  = "disaster-relief.tfstate"
+    # key                  = "disaster-relief.tfstate" # Removed to allow dynamic state keys per environment via -backend-config
   }
 }
 

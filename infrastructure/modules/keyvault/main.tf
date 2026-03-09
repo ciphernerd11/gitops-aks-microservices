@@ -10,6 +10,11 @@ variable "location" {
   type = string
 }
 
+variable "app_subnet_ids" {
+  type    = list(string)
+  default = []
+}
+
 variable "tags" {
   type = map(string)
 }
@@ -27,6 +32,13 @@ resource "azurerm_key_vault" "kv" {
 
   # We will use RBAC instead of Access Policies for better management
   enable_rbac_authorization = true
+
+  # Hardening KV with Network ACLs
+  network_acls {
+    bypass                     = "AzureServices"
+    default_action             = length(var.app_subnet_ids) > 0 ? "Deny" : "Allow"
+    virtual_network_subnet_ids = var.app_subnet_ids
+  }
 
   tags = var.tags
 }
@@ -55,3 +67,4 @@ output "id" {
 output "vault_uri" {
   value = azurerm_key_vault.kv.vault_uri
 }
+
