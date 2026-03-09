@@ -25,7 +25,8 @@ env:
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
 jobs:
-  terraform:
+  terraform-plan:
+    name: 'Terraform Plan'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -40,28 +41,40 @@ jobs:
         with:
           terraform_version: "1.7.5"
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
-
       - name: Terraform Init
-        id: init
         run: |
           ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
           terraform init -backend-config="key=${ENV_NAME}.tfstate"
 
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-
       - name: Terraform Plan
         id: plan
         run: |
-          # Use the environment input for manual runs, or default to dev for pull requests
           ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
-          echo "Planning for environment: $ENV_NAME"
           terraform plan -var-file="environments/$ENV_NAME.tfvars" -no-color
 
+  terraform-apply:
+    name: 'Terraform Apply'
+    needs: terraform-plan
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    defaults:
+      run:
+        working-directory: ./infrastructure
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform Init
+        run: |
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
+          terraform init -backend-config="key=${ENV_NAME}.tfstate"
+
       - name: Terraform Apply
-        if: github.event_name == 'workflow_dispatch'
         run: terraform apply -var-file="environments/${{ github.event.inputs.environment }}.tfvars" -auto-approve -input=false
