@@ -63,7 +63,19 @@ module "acr" {
 }
 
 # ─────────────────────────────────────────────────────
-# 5. Azure Kubernetes Service (AKS) Module
+# 5. Azure Key Vault Module
+# ─────────────────────────────────────────────────────
+
+module "keyvault" {
+  source              = "./modules/keyvault"
+  resource_prefix     = local.resource_prefix
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  tags                = local.common_tags
+}
+
+# ─────────────────────────────────────────────────────
+# 6. Azure Kubernetes Service (AKS) Module
 # ─────────────────────────────────────────────────────
 
 module "aks" {
@@ -75,6 +87,7 @@ module "aks" {
   aks_node_count             = var.aks_node_count
   aks_node_vm_size           = var.aks_node_vm_size
   acr_id                     = module.acr.id
+  key_vault_id               = module.keyvault.id
   vnet_subnet_id             = module.network.app_subnet_ids[0]
   log_analytics_workspace_id = module.log_analytics.workspace_id
   tags                       = local.common_tags

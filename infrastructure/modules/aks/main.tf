@@ -17,6 +17,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type = "SystemAssigned"
   }
 
+  key_vault_secrets_provider {
+    secret_rotation_enabled = true
+  }
+
   network_profile {
     network_plugin    = "azure"
     load_balancer_sku = "standard"
@@ -36,5 +40,12 @@ resource "azurerm_role_assignment" "aks_acr_pull" {
   principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
   role_definition_name             = "AcrPull"
   scope                            = var.acr_id
+  skip_service_principal_aad_check = true
+}
+
+resource "azurerm_role_assignment" "aks_kv_secrets" {
+  principal_id                     = azurerm_kubernetes_cluster.aks.key_vault_secrets_provider[0].secret_identity[0].object_id
+  role_definition_name             = "Key Vault Secrets User"
+  scope                            = var.key_vault_id
   skip_service_principal_aad_check = true
 }

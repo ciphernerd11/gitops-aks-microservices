@@ -33,6 +33,10 @@ variable "acr_id" {
   type        = string
 }
 
+variable "key_vault_id" {
+  type = string
+}
+
 variable "vnet_subnet_id" {
   description = "The ID of the Subnet where the AKS Cluster should be deployed"
   type        = string
