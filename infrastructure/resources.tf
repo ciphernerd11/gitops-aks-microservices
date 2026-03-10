@@ -86,3 +86,17 @@ module "aks" {
   log_analytics_workspace_id = module.log_analytics.workspace_id
   tags                       = local.common_tags
 }
+
+# ─────────────────────────────────────────────────────
+# 4. GitOps & Application Configuration
+# ─────────────────────────────────────────────────────
+
+module "argocd" {
+  source                     = "./modules/argocd"
+  kubernetes_host            = module.aks.kubernetes_host
+  kubelet_identity_client_id = module.aks.kubelet_identity_client_id
+  key_vault_name             = "kv-disasterreliefdev"
+  tenant_id                  = "4db0fb37-506e-4401-8aa4-752ee1d1732d"
+
+  depends_on = [module.aks]
+}
