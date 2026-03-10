@@ -61,7 +61,7 @@ resource "helm_release" "agic" {
   }
 
   set {
-    name  = "armAuth.identityClientId"
+    name  = "armAuth.identityClientID"
     value = var.agic_identity_client_id
   }
 
