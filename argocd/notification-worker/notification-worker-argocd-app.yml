@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: notification-worker-platform
+  name: notification-worker-service
   namespace: argocd
   labels:
     app.kubernetes.io/part-of: disaster-relief
