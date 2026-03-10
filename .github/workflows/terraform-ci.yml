@@ -42,15 +42,15 @@ jobs:
         with:
           terraform_version: "1.7.5"
 
-      - name: Terraform Init
-        run: |
-          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
-          terraform init -backend-config="key=${ENV_NAME}.tfstate"
-
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ env.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: |
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
+          terraform init -backend-config="key=${ENV_NAME}.tfstate"
 
       - name: Get Public IP
         id: ip
@@ -90,15 +90,15 @@ jobs:
         with:
           terraform_version: "1.7.5"
 
-      - name: Terraform Init
-        run: |
-          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
-          terraform init -backend-config="key=${ENV_NAME}.tfstate"
-
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ env.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: |
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
+          terraform init -backend-config="key=${ENV_NAME}.tfstate"
 
       - name: Get Public IP
         id: ip
