@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: acrdisasterreliefdev.azurecr.io/frontend:e930122239f898ccaef0f75439d2ab34798d975e
+          image: acrdisasterreliefdev.azurecr.io/frontend:4cd6b16663a8067f5746677989f0edb3e8eb772e
           ports:
             - containerPort: 80
               protocol: TCP
@@ -66,4 +66,4 @@ spec:
   template:
     spec:
       containers:
-        - image: acrdisasterreliefdev.azurecr.io/frontend:e930122239f898ccaef0f75439d2ab34798d975e
+        - image: acrdisasterreliefdev.azurecr.io/frontend:4cd6b16663a8067f5746677989f0edb3e8eb772e
