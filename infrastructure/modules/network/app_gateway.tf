@@ -94,4 +94,10 @@ resource "azurerm_application_gateway" "main" {
   }
 
   tags = merge(var.tags, { Name = "agw-${var.resource_prefix}" })
+
+  depends_on = [
+    azurerm_network_security_rule.allow_web,
+    azurerm_network_security_rule.allow_gateway_manager,
+    azurerm_subnet_network_security_group_association.gateway
+  ]
 }
