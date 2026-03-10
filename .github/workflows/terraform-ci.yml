@@ -56,10 +56,14 @@ jobs:
         id: ip
         run: echo "ipv4=$(curl -s https://api.ipify.org)" >> $GITHUB_OUTPUT
 
-      - name: Pre-Whitelist Runner IP
+      - name: Pre-Whitelist Runner IP (if Vault exists)
         run: |
-          az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
-          sleep 10 # Wait for firewall propagation
+          if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
+            az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
+            sleep 10
+          else
+            echo "Key Vault 'kv-disasterreliefdev' not found. Skipping whitelisting."
+          fi
 
       - name: Terraform Plan
         id: plan
@@ -100,10 +104,14 @@ jobs:
         id: ip
         run: echo "ipv4=$(curl -s https://api.ipify.org)" >> $GITHUB_OUTPUT
 
-      - name: Pre-Whitelist Runner IP
+      - name: Pre-Whitelist Runner IP (if Vault exists)
         run: |
-          az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
-          sleep 10
+          if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
+            az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
+            sleep 10
+          else
+            echo "Key Vault 'kv-disasterreliefdev' not found. Skipping whitelisting."
+          fi
 
       - name: Terraform Apply
         run: terraform apply -var-file="environments/${{ github.event.inputs.environment }}.tfvars" -var="allowed_ips=[\"${{ steps.ip.outputs.ipv4 }}\"]" -auto-approve -input=false

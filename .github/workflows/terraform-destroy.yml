@@ -75,8 +75,12 @@ jobs:
 
       - name: Pre-Whitelist Runner IP (if Vault exists)
         run: |
-          az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}" || echo "Key Vault not found, skipping pre-whitelist."
-          sleep 10
+          if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
+            az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
+            sleep 10
+          else
+            echo "Key Vault 'kv-disasterreliefdev' not found. Skipping whitelisting."
+          fi
 
       - name: Terraform Destroy
         run: |
