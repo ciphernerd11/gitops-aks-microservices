@@ -78,7 +78,7 @@ resource "azurerm_application_gateway" "main" {
       backend_address_pool,
       backend_http_settings,
       http_listener,
-      prob,
+      probe,
       request_routing_rule,
       frontend_port,
       redirect_configuration,
