@@ -9,6 +9,10 @@ metadata:
     appgw.ingress.kubernetes.io/hostname: "argocd.disaster-relief.com"
 spec:
   ingressClassName: azure-application-gateway
+  tls:
+    - hosts:
+        - argocd.disaster-relief.com
+      secretName: disaster-relief-tls
   rules:
   - host: argocd.disaster-relief.com
     http:

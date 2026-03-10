@@ -10,7 +10,6 @@ spec:
   tls:
     - hosts:
         - disaster-relief.com
-        - argocd.disaster-relief.com
       secretName: disaster-relief-tls
 
   rules:
@@ -38,16 +37,5 @@ spec:
             backend:
               service:
                 name: frontend-service
-                port:
-                  number: 80
-
-    - host: argocd.disaster-relief.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: argocd-server
                 port:
                   number: 80
