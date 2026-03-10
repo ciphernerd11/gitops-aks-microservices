@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alert-api-ingress
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  ingressClassName: azure-application-gateway
+
+  tls:
+    - hosts:
+        - disaster-relief.com
+      secretName: disaster-relief-tls
+
+  rules:
+    - host: disaster-relief.com
+      http:
+        paths:
+          - path: /api/alerts
+            pathType: Prefix
+            backend:
+              service:
+                name: alert-api-service
+                port:
+                  number: 8000

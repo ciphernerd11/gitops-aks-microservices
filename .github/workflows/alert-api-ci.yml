@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'src/alert-api/**'
-      - 'kube/alert-api-deployment.yaml'
+      - 'kube/alert-api/**'
   pull_request:
     branches: [main]
     paths:
@@ -52,7 +52,7 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
       - name: Update Tag
         run: |
-          yq -i '.spec.template.spec.containers[0].image = "'$REGISTRY'/'$SERVICE_NAME':'${{ github.sha }}'"' kube/$SERVICE_NAME-deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = "'$REGISTRY'/'$SERVICE_NAME':'${{ github.sha }}'"' kube/$SERVICE_NAME/$SERVICE_NAME-deployment.yaml
       - name: Commit & Push
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |

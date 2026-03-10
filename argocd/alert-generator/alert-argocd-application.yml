@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: disaster-relief-platform
+  name: alert-generator-platform
   namespace: argocd
   labels:
     app.kubernetes.io/part-of: disaster-relief
@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/ciphernerd11/gitops-aks-microservices.git
     targetRevision: main
-    path: kube/frontend/
+    path: kube/alert-generator/
 
   destination:
     server: https://kubernetes.default.svc

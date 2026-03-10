@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: disaster-relief-ingress
+  name: frontend-ingress
   annotations:
     kubernetes.io/ingress.class: azure/application-gateway
 spec:
@@ -16,22 +16,6 @@ spec:
     - host: disaster-relief.com
       http:
         paths:
-          - path: /api/alerts
-            pathType: Prefix
-            backend:
-              service:
-                name: alert-api-service
-                port:
-                  number: 8000
-
-          - path: /api/resources
-            pathType: Prefix
-            backend:
-              service:
-                name: resource-api-service
-                port:
-                  number: 3000
-
           - path: /
             pathType: Prefix
             backend:

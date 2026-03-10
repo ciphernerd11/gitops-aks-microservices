@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'src/alert-generator/**'
-      - 'kube/alert-generator-cronjob.yaml'
+      - 'kube/alert-generator/**'
   pull_request:
     branches: [main]
     paths:
@@ -52,7 +52,7 @@ jobs:
           sudo chmod +x /usr/local/bin/yq
       - name: Update Tag
         run: |
-          yq -i '.spec.jobTemplate.spec.template.spec.containers[0].image = "'$REGISTRY'/'$SERVICE_NAME':'${{ github.sha }}'"' kube/alert-generator-cronjob.yaml
+          yq -i '.spec.jobTemplate.spec.template.spec.containers[0].image = "'$REGISTRY'/'$SERVICE_NAME':'${{ github.sha }}'"' kube/$SERVICE_NAME/alert-generator-cronjob.yaml
       - name: Commit & Push
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |

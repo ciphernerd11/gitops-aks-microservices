@@ -53,19 +53,3 @@ spec:
         resources:
           requests:
             storage: 1Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis-service
-  labels:
-    app.kubernetes.io/name: redis
-    app.kubernetes.io/part-of: disaster-relief
-spec:
-  clusterIP: None
-  selector:
-    app.kubernetes.io/name: redis
-  ports:
-    - port: 6379
-      targetPort: 6379
-      protocol: TCP
