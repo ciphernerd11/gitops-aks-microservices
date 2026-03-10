@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: acrdisasterreliefdev.azurecr.io/frontend:dfc0663427e1384a3d421307718bcb13b500ac8f
+          image: acrdisasterreliefdev.azurecr.io/frontend:frontend-${GITHUB_SHA::8}
           ports:
             - containerPort: 80
               protocol: TCP
