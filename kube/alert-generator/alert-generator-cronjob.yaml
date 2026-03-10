@@ -13,7 +13,7 @@ spec:
         spec:
           containers:
             - name: alert-generator
-              image: acrdisasterreliefdev.azurecr.io/alert-generator:alert-generator-${GITHUB_SHA::8}
+              image: acrdisasterreliefdev.azurecr.io/alert-generator:stable
               env:
                 - name: API_URL
                   value: "http://alert-api-service:8000/alerts"

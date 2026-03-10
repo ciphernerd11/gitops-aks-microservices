@@ -85,6 +85,7 @@ module "aks" {
   vnet_id                    = module.network.vnet_id
   vnet_subnet_id             = module.network.app_subnet_ids[0]
   gateway_subnet_id          = module.network.gateway_subnet_id
+  gateway_id                 = module.network.gateway_id
   log_analytics_workspace_id = module.log_analytics.workspace_id
   tags                       = module.tags.tags
 }
@@ -98,7 +99,12 @@ module "argocd" {
   kubernetes_host            = module.aks.kubernetes_host
   kubelet_identity_client_id = module.aks.kubelet_identity_client_id
   key_vault_name             = "kv-disasterreliefdev"
-  tenant_id                  = "4db0fb37-506e-4401-8aa4-752ee1d1732d"
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  subscription_id            = data.azurerm_client_config.current.subscription_id
+  resource_group_name        = azurerm_resource_group.main.name
+  gateway_name               = module.network.gateway_name
+  agic_identity_client_id    = module.aks.agic_identity_client_id
+  agic_identity_id           = module.aks.agic_identity_id
 
   depends_on = [module.aks]
 }

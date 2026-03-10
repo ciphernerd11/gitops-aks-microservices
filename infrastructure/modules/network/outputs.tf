@@ -16,3 +16,13 @@ output "db_subnet_ids" {
 output "gateway_subnet_id" {
   value = azurerm_subnet.gateway.id
 }
+
+output "gateway_id" {
+  description = "The ID of the Application Gateway"
+  value       = azurerm_application_gateway.main.id
+}
+
+output "gateway_name" {
+  description = "The Name of the Application Gateway"
+  value       = azurerm_application_gateway.main.name
+}

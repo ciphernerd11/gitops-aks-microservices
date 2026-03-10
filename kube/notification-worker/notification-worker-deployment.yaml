@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: notification-worker
-          image: acrdisasterreliefdev.azurecr.io/notification-worker:notification-worker-${GITHUB_SHA::8}
+          image: acrdisasterreliefdev.azurecr.io/notification-worker:stable
           env:
             - name: ALERT_API_URL
               value: http://alert-api-service:8000

@@ -53,7 +53,8 @@ jobs:
       - name: Update Tag
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
-          yq -i '.spec.template.spec.containers[0].image = "'$REGISTRY'/'$SERVICE_NAME':'$SERVICE_NAME'-'$SHORT_SHA'"' kube/$SERVICE_NAME/$SERVICE_NAME-deployment.yaml
+          cd kube/$SERVICE_NAME
+          kustomize edit set image $REGISTRY/$SERVICE_NAME=$REGISTRY/$SERVICE_NAME:$SERVICE_NAME-$SHORT_SHA
       - name: Commit & Push
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |

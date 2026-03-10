@@ -115,3 +115,19 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -var-file="environments/${{ github.event.inputs.environment }}.tfvars" -var="allowed_ips=[\"${{ steps.ip.outputs.ipv4 }}\"]" -auto-approve -input=false
+
+  trigger-apps:
+    name: 'Trigger Applications'
+    needs: terraform-apply
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger App Workflows
+        run: |
+          workflows=("frontend-ci.yml" "alert-api-ci.yml" "resource-api-ci.yml" "notification-worker-ci.yml" "alert-generator-ci.yml")
+          for wf in "${workflows[@]}"; do
+            echo "Triggering $wf..."
+            gh workflow run "$wf" --ref main -f environment=${{ github.event.inputs.environment }}
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

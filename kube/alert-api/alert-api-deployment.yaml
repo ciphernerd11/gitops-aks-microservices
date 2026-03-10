@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: alert-api
-          image: acrdisasterreliefdev.azurecr.io/alert-api:alert-api-${GITHUB_SHA::8}
+          image: acrdisasterreliefdev.azurecr.io/alert-api:stable
           ports:
             - containerPort: 8000
               protocol: TCP

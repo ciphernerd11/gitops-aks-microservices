@@ -17,3 +17,23 @@ variable "tenant_id" {
   type        = string
   description = "The Azure Tenant ID"
 }
+
+variable "agic_identity_client_id" {
+  type = string
+}
+
+variable "agic_identity_id" {
+  type = string
+}
+
+variable "gateway_name" {
+  type = string
+}
+
+variable "resource_group_name" {
+  type = string
+}
+
+variable "subscription_id" {
+  type = string
+}

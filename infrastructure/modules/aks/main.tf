@@ -34,9 +34,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     log_analytics_workspace_id = var.log_analytics_workspace_id
   }
 
-  ingress_application_gateway {
-    subnet_id = var.gateway_subnet_id
-  }
+  # We disable the managed addon and will use a manually defined Application Gateway for stability
+  # ingress_application_gateway {
+  #   subnet_id = var.gateway_subnet_id
+  # }
 
   tags = merge(var.tags, { Name = "aks-${var.resource_prefix}" })
 }
@@ -55,9 +56,23 @@ resource "azurerm_role_assignment" "aks_kv_secrets" {
   skip_service_principal_aad_check = true
 }
 
+resource "azurerm_user_assigned_identity" "agic" {
+  name                = "id-agic-${var.resource_prefix}"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.tags
+}
+
 resource "azurerm_role_assignment" "aks_agic_network" {
-  principal_id                     = azurerm_kubernetes_cluster.aks.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id
+  principal_id                     = azurerm_user_assigned_identity.agic.principal_id
   role_definition_name             = "Network Contributor"
   scope                            = var.vnet_id
+  skip_service_principal_aad_check = true
+}
+
+resource "azurerm_role_assignment" "aks_agic_gw" {
+  principal_id                     = azurerm_user_assigned_identity.agic.principal_id
+  role_definition_name             = "Network Contributor"
+  scope                            = var.gateway_id
   skip_service_principal_aad_check = true
 }

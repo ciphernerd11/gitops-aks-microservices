@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: resource-api
-          image: acrdisasterreliefdev.azurecr.io/resource-api:resource-api-${GITHUB_SHA::8}
+          image: acrdisasterreliefdev.azurecr.io/resource-api:stable
           ports:
             - containerPort: 3000
               protocol: TCP

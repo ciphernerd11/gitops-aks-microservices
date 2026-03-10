@@ -61,3 +61,8 @@ variable "vnet_id" {
   description = "ID of the Virtual Network for role assignment"
   type        = string
 }
+
+variable "gateway_id" {
+  description = "ID of the Application Gateway for role assignment"
+  type        = string
+}

@@ -37,3 +37,12 @@ output "kubelet_identity_client_id" {
   description = "The Client ID of the Kubelet Managed Identity"
   value       = azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id
 }
+output "agic_identity_client_id" {
+  description = "The Client ID of the AGIC User Assigned Identity"
+  value       = azurerm_user_assigned_identity.agic.client_id
+}
+
+output "agic_identity_id" {
+  description = "The ID of the AGIC User Assigned Identity"
+  value       = azurerm_user_assigned_identity.agic.id
+}
