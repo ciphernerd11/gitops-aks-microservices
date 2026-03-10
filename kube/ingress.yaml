@@ -3,30 +3,51 @@ kind: Ingress
 metadata:
   name: disaster-relief-ingress
   annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
 spec:
   ingressClassName: azure-application-gateway
+
+  tls:
+    - hosts:
+        - disaster-relief.com
+        - argocd.disaster-relief.com
+      secretName: disaster-relief-tls
+
   rules:
-  - host: disaster-relief.com
-    http:
-      paths:
-      - path: /api/alerts
-        pathType: Prefix
-        backend:
-          service:
-            name: alert-api-service
-            port:
-              number: 8000
-      - path: /api/resources
-        pathType: Prefix
-        backend:
-          service:
-            name: resource-api-service
-            port:
-              number: 3000
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
+    - host: disaster-relief.com
+      http:
+        paths:
+          - path: /api/alerts
+            pathType: Prefix
+            backend:
+              service:
+                name: alert-api-service
+                port:
+                  number: 8000
+
+          - path: /api/resources
+            pathType: Prefix
+            backend:
+              service:
+                name: resource-api-service
+                port:
+                  number: 3000
+
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+
+    - host: argocd.disaster-relief.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
