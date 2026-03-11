@@ -31,13 +31,12 @@ resource "azurerm_federated_identity_credential" "agic" {
   audience            = ["api://AzureADTokenExchange"]
   issuer              = var.oidc_issuer_url
   parent_id           = var.agic_identity_id
-  subject             = "system:serviceaccount:kube-system:ingress-azure"
+  subject             = "system:serviceaccount:kube-system:agic-sa"
 }
 
 resource "helm_release" "agic" {
   name             = "agic"
-  repository       = "oci://mcr.microsoft.com/azure-application-gateway/charts"
-  chart            = "ingress-azure"
+  chart            = "oci://mcr.microsoft.com/azure-application-gateway/charts/ingress-azure"
   namespace        = "kube-system"
   version          = "1.7.2"
   create_namespace = true
@@ -64,6 +63,11 @@ resource "helm_release" "agic" {
   }
 
   set {
+    name  = "armAuth.tenantID"
+    value = var.tenant_id
+  }
+
+  set {
     name  = "armAuth.identityResourceID"
     value = var.agic_identity_id
   }
@@ -71,6 +75,11 @@ resource "helm_release" "agic" {
   set {
     name  = "armAuth.identityClientID"
     value = var.agic_identity_client_id
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "agic-sa"
   }
 
   set {
