@@ -9,4 +9,4 @@ resources:
 images:
 - name: acrdisasterreliefdev.azurecr.io/resource-api
   newName: acrdisasterreliefdev.azurecr.io/resource-api
-  newTag: resource-api-b6bd057e
+  newTag: resource-api-8e21fc34
