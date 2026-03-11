@@ -7,7 +7,7 @@ environment        = "qa"
 location           = "East US"
 aks_node_count     = 2
 aks_node_vm_size   = "Standard_D2s_v3"
-kubernetes_version = "1.33.7"
+kubernetes_version = "1.30.7"
 acr_sku            = "Basic"
 
 vnet_cidr           = ["10.2.0.0/16"]

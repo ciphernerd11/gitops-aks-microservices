@@ -79,9 +79,9 @@ jobs:
       - name: Cleanup Whitelist
         if: always()
         run: |
-          ENV_NAME="{{ github.event.inputs.environment || 'dev' }}"
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
           KV_NAME="kv-disasterrelief${ENV_NAME}"
-          az keyvault network-rule remove --name "$KV_NAME" --ip-address "{{ steps.ip.outputs.ipv4 }}" || true
+          az keyvault network-rule remove --name "$KV_NAME" --ip-address "${{ steps.ip.outputs.ipv4 }}" || true
 
   terraform-apply:
     name: "Terraform Apply"
@@ -118,9 +118,11 @@ jobs:
 
       - name: Pre-Whitelist Runner IP (if Vault exists)
         run: |
-          if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
+          KV_NAME="kv-disasterrelief${ENV_NAME}"
+          if az keyvault show --name "$KV_NAME" &>/dev/null; then
             echo "Whitelisting IP ${{ steps.ip.outputs.ipv4 }} on $KV_NAME..."
-            az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
+            az keyvault network-rule add --name "$KV_NAME" --ip-address "${{ steps.ip.outputs.ipv4 }}"
             echo "Waiting 60s for Azure Firewall propagation..."
             sleep 60
           else
@@ -133,9 +135,9 @@ jobs:
       - name: Cleanup Whitelist
         if: always()
         run: |
-          ENV_NAME="${{ github.event.inputs.environment }}"
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
           KV_NAME="kv-disasterrelief${ENV_NAME}"
-          az keyvault network-rule remove --name "$KV_NAME" --ip-address "{{ steps.ip.outputs.ipv4 }}" || true
+          az keyvault network-rule remove --name "$KV_NAME" --ip-address "${{ steps.ip.outputs.ipv4 }}" || true
 
   # trigger-apps:
   #   name: "Trigger Applications"
