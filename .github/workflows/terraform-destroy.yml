@@ -10,21 +10,22 @@ on:
         required: true
         default: "no"
       environment:
-        description: 'Environment to destroy'
+        description: "Environment to destroy"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
-        - dev
-        - qa
-        - uat
-        - prod
+          - dev
+          - qa
+          - uat
+          - prod
       state_key_override:
-        description: 'Optional: Direct path to state file (e.g. disaster-relief.tfstate) if resources are not found'
+        description: "Optional: Direct path to state file (e.g. disaster-relief.tfstate) if resources are not found"
         required: false
         default: ""
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -54,13 +55,13 @@ jobs:
           # Use override if provided, otherwise default to ENV.tfstate
           IF_KEY="${{ github.event.inputs.state_key_override }}"
           ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
-          
+
           if [ -n "$IF_KEY" ]; then
             SELECTED_KEY="$IF_KEY"
           else
             SELECTED_KEY="${ENV_NAME}.tfstate"
           fi
-          
+
           echo "Initializing with state key: $SELECTED_KEY"
           terraform init -backend-config="key=$SELECTED_KEY"
 

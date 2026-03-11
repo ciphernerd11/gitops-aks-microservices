@@ -49,6 +49,13 @@ resource "azurerm_key_vault" "kv" {
   public_network_access_enabled = true # Required to allow traffic to reach the firewall rules
 
   tags = merge(var.tags, { Name = "kv-${substr(replace(var.resource_prefix, "-", ""), 0, 20)}" })
+
+  lifecycle {
+    ignore_changes = [
+      network_acls[0].ip_rules,
+      network_acls[0].virtual_network_subnet_ids
+    ]
+  }
 }
 
 data "azurerm_client_config" "current" {}

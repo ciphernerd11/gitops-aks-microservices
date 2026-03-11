@@ -19,6 +19,7 @@ on:
       - "infrastructure/**"
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -63,8 +64,8 @@ jobs:
           if az keyvault show --name "$KV_NAME" &>/dev/null; then
             echo "Whitelisting IP ${{ steps.ip.outputs.ipv4 }} on $KV_NAME..."
             az keyvault network-rule add --name "$KV_NAME" --ip-address "${{ steps.ip.outputs.ipv4 }}"
-            echo "Waiting 30s for Azure Firewall propagation..."
-            sleep 30
+            echo "Waiting 45s for Azure Firewall propagation..."
+            sleep 45
           else
             echo "Key Vault '$KV_NAME' not found. This might be a fresh infra creation."
           fi
@@ -120,8 +121,8 @@ jobs:
           if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
             echo "Whitelisting IP ${{ steps.ip.outputs.ipv4 }} on $KV_NAME..."
             az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
-            echo "Waiting 30s for Azure Firewall propagation..."
-            sleep 30
+            echo "Waiting 45s for Azure Firewall propagation..."
+            sleep 45
           else
             echo "Key Vault '$KV_NAME' not found."
           fi
