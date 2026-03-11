@@ -1,0 +1,56 @@
+name: 'Promote Image'
+description: 'Promotes a Docker image from dev ACR to environment-specific ACR and updates Kustomize manifests'
+inputs:
+  service_name:
+    description: 'Name of the service'
+    required: true
+  image_tag:
+    description: 'The image tag to promote (from dev ACR)'
+    required: true
+  target_env:
+    description: 'Target environment (qa, uat, prod)'
+    required: true
+  target_acr:
+    description: 'Target ACR name'
+    required: true
+  dev_acr:
+    description: 'Dev ACR name'
+    required: true
+    default: 'acrdisasterreliefdev'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Azure Login Check
+      shell: pwsh
+      run: |
+        if (-not (az account show)) {
+          Write-Error "Not logged into Azure. Please run azure/login first."
+          exit 1
+        }
+
+    - name: Import Image to Target ACR
+      shell: pwsh
+      run: |
+        $sourceImage = "${{ inputs.dev_acr }}.azurecr.io/${{ inputs.service_name }}:${{ inputs.image_tag }}"
+        $targetImage = "${{ inputs.service_name }}:${{ inputs.image_tag }}"
+        Write-Host "Promoting $sourceImage to ${{ inputs.target_acr }}..."
+        
+        az acr import `
+          --name ${{ inputs.target_acr }} `
+          --source $sourceImage `
+          --image $targetImage `
+          --force
+
+    - name: Update Kustomize Tag
+      shell: pwsh
+      run: |
+        $targetDir = "kube/${{ inputs.service_name }}/overlays/${{ inputs.target_env }}"
+        $targetRegistry = "${{ inputs.target_acr }}.azurecr.io"
+        $devRegistry = "${{ inputs.dev_acr }}.azurecr.io"
+        
+        Write-Host "Updating manifest in $targetDir..."
+        cd $targetDir
+        
+        # We use kustomize to update the image tag and the registry name
+        kustomize edit set image "$devRegistry/${{ inputs.service_name }}=$targetRegistry/${{ inputs.service_name }}:${{ inputs.image_tag }}"

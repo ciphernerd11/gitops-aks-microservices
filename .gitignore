@@ -36,3 +36,18 @@ Thumbs.db
 *.tfstate
 *.tfstate.backup
 .terraform/
+
+
+# ---- Certificates ----
+argocd.crt
+argocd.key
+disaster-relief.crt
+disaster-relief.key
+
+#--- json ---
+eastus_quotas.json
+quotas.json
+versions.json
+
+# ---- yaml ----
+seed-pod.yaml

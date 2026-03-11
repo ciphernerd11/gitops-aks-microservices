@@ -18,45 +18,41 @@ on:
         default: 'dev'
         type: choice
         options: [dev, qa, uat, prod]
+      image_tag:
+        description: 'Image tag to promote (only for qa, uat, prod)'
+        required: false
+        type: string
 
 env:
-  ACR_NAME: ${{ secrets.ACR_NAME }}
-  REGISTRY: ${{ secrets.ACR_NAME }}.azurecr.io
   SERVICE_NAME: resource-api
+  DEV_ACR: acrdisasterreliefdev
+  # Dynamic ACR name based on environment choice
+  TARGET_ACR: acrdisasterrelief${{ github.event.inputs.environment || 'dev' }}
 
 jobs:
-  build-push:
+  build-push-dev:
+    if: github.event.inputs.environment == 'dev' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - run: az acr login --name $ACR_NAME
+      - run: az acr login --name $DEV_ACR
       - name: Build & Push
         run: |
-          docker build -t $REGISTRY/$SERVICE_NAME:$SERVICE_NAME-${GITHUB_SHA::8} ./src/$SERVICE_NAME
-          docker push $REGISTRY/$SERVICE_NAME:$SERVICE_NAME-${GITHUB_SHA::8}
-
-  update-manifest:
-    needs: build-push
-    runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'dev' }}
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install yq
+          TAG=$SERVICE_NAME-${GITHUB_SHA::8}
+          REGISTRY=$DEV_ACR.azurecr.io
+          docker build -t $REGISTRY/$SERVICE_NAME:$TAG ./src/$SERVICE_NAME
+          docker push $REGISTRY/$SERVICE_NAME:$TAG
+          echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
+      
+      - name: Update Dev Manifest
         run: |
-          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          sudo chmod +x /usr/local/bin/yq
-      - name: Update Tag
-        run: |
-          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
-          cd kube/$SERVICE_NAME
-          kustomize edit set image $REGISTRY/$SERVICE_NAME=$REGISTRY/$SERVICE_NAME:$SERVICE_NAME-$SHORT_SHA
+          cd kube/$SERVICE_NAME/overlays/dev
+          kustomize edit set image $DEV_ACR.azurecr.io/$SERVICE_NAME=$DEV_ACR.azurecr.io/$SERVICE_NAME:$IMAGE_TAG
+      
       - name: Commit & Push
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -65,17 +61,42 @@ jobs:
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "ci: update $SERVICE_NAME tag to ${{ github.sha }} [skip ci]"
-          
-          # Implementation of rebase-and-retry to handle concurrent pushes
+          git commit -m "ci: update $SERVICE_NAME dev tag to $IMAGE_TAG [skip ci]"
           for i in {1..5}; do
             git pull --rebase origin main
-            if git push origin main; then
-              echo "Push successful"
-              exit 0
-            fi
-            echo "Push failed, retrying in 5s... (Attempt $i)"
+            if git push origin main; then exit 0; fi
             sleep 5
           done
-          echo "Failed to push after 5 attempts"
+          exit 1
+
+  promote-to-env:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment != 'dev'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Promote Image
+        uses: ./.github/actions/promote-image
+        with:
+          service_name: ${{ env.SERVICE_NAME }}
+          image_tag: ${{ github.event.inputs.image_tag }}
+          target_env: ${{ github.event.inputs.environment }}
+          target_acr: ${{ env.TARGET_ACR }}
+          dev_acr: ${{ env.DEV_ACR }}
+
+      - name: Commit & Push Promotion
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kube/
+          git commit -m "ci: promote $SERVICE_NAME to ${{ github.event.inputs.environment }} with tag ${{ github.event.inputs.image_tag }} [skip ci]"
+          for i in {1..5}; do
+            git pull --rebase origin main
+            if git push origin main; then exit 0; fi
+            sleep 5
+          done
           exit 1

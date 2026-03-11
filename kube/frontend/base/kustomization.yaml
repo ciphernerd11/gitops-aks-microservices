@@ -5,8 +5,3 @@ resources:
 - frontend-deployment.yaml
 - frontend-service.yml
 - frontend-ingress.yml
-
-images:
-- name: acrdisasterreliefdev.azurecr.io/frontend
-  newName: acrdisasterreliefdev.azurecr.io/frontend
-  newTag: frontend-790f3465

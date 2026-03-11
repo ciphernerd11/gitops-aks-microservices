@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/ciphernerd11/gitops-aks-microservices.git
     targetRevision: main
-    path: kube/frontend/
+    path: kube/frontend/overlays/dev/
 
   destination:
     server: https://kubernetes.default.svc

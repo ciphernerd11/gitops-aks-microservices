@@ -98,7 +98,7 @@ module "argocd" {
   source                     = "./modules/argocd"
   kubernetes_host            = module.aks.kubernetes_host
   kubelet_identity_client_id = module.aks.kubelet_identity_client_id
-  key_vault_name             = "kv-disasterreliefdev"
+  key_vault_name             = module.keyvault.name
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   subscription_id            = data.azurerm_client_config.current.subscription_id
   resource_group_name        = azurerm_resource_group.main.name

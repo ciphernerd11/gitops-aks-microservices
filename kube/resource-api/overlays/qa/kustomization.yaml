@@ -2,11 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- resource-api-deployment.yaml
-- resource-api-service.yml
-- resource-api-ingress.yml
+- ../../base
 
 images:
 - name: acrdisasterreliefdev.azurecr.io/resource-api
-  newName: acrdisasterreliefdev.azurecr.io/resource-api
+  newName: acrdisasterreliefqa.azurecr.io/resource-api
   newTag: resource-api-136e57cc
