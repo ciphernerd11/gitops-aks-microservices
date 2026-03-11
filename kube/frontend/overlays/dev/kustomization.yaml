@@ -7,4 +7,4 @@ resources:
 images:
 - name: acrdisasterreliefdev.azurecr.io/frontend
   newName: acrdisasterreliefdev.azurecr.io/frontend
-  newTag: frontend-790f3465
+  newTag: frontend-09868599
