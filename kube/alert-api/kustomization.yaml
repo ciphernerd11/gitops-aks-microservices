@@ -2,10 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - alert-api-deployment.yaml
-  - alert-api-service.yml
-  - alert-api-ingress.yml
+- alert-api-deployment.yaml
+- alert-api-service.yml
+- alert-api-ingress.yml
 
 images:
-  - name: acrdisasterreliefdev.azurecr.io/alert-api
-    newTag: stable
+- name: acrdisasterreliefdev.azurecr.io/alert-api
+  newName: acrdisasterreliefdev.azurecr.io/alert-api
+  newTag: alert-api-b0192e55
