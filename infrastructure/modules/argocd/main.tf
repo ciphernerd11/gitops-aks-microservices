@@ -74,6 +74,16 @@ resource "helm_release" "agic" {
   }
 
   set {
+    name  = "serviceAccount.annotations.azure\\.workload\\.identity/client-id"
+    value = var.agic_identity_client_id
+  }
+
+  set {
+    name  = "serviceAccount.labels.azure\\.workload\\.identity/use"
+    value = "true"
+  }
+
+  set {
     name  = "rbac.enabled"
     value = "true"
   }
