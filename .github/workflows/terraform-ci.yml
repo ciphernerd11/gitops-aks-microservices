@@ -130,7 +130,7 @@ jobs:
           workflows=("frontend-ci.yml" "alert-api-ci.yml" "resource-api-ci.yml" "notification-worker-ci.yml" "alert-generator-ci.yml")
           for wf in "${workflows[@]}"; do
             echo "Triggering $wf..."
-            gh workflow run "$wf" --ref main -f environment=${{ github.event.inputs.environment }}
+            gh workflow run "$wf" --repo ${{ github.repository }} --ref main -f environment=${{ github.event.inputs.environment }}
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
