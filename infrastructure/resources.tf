@@ -94,18 +94,18 @@ module "aks" {
 # 4. GitOps & Application Configuration
 # ─────────────────────────────────────────────────────
 
-# module "argocd" {
-#   source                     = "./modules/argocd"
-#   kubernetes_host            = module.aks.kubernetes_host
-#   kubelet_identity_client_id = module.aks.kubelet_identity_client_id
-#   key_vault_name             = module.keyvault.name
-#   tenant_id                  = data.azurerm_client_config.current.tenant_id
-#   subscription_id            = data.azurerm_client_config.current.subscription_id
-#   resource_group_name        = azurerm_resource_group.main.name
-#   gateway_name               = module.network.gateway_name
-#   agic_identity_client_id    = module.aks.agic_identity_client_id
-#   agic_identity_id           = module.aks.agic_identity_id
-#   oidc_issuer_url            = module.aks.oidc_issuer_url
+module "argocd" {
+  source                     = "./modules/argocd"
+  kubernetes_host            = module.aks.kubernetes_host
+  kubelet_identity_client_id = module.aks.kubelet_identity_client_id
+  key_vault_name             = module.keyvault.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  subscription_id            = data.azurerm_client_config.current.subscription_id
+  resource_group_name        = azurerm_resource_group.main.name
+  gateway_name               = module.network.gateway_name
+  agic_identity_client_id    = module.aks.agic_identity_client_id
+  agic_identity_id           = module.aks.agic_identity_id
+  oidc_issuer_url            = module.aks.oidc_issuer_url
 
-#   depends_on = [module.aks]
-# }
+  depends_on = [module.aks]
+}
