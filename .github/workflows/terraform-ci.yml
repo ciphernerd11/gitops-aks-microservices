@@ -64,8 +64,8 @@ jobs:
           if az keyvault show --name "$KV_NAME" &>/dev/null; then
             echo "Whitelisting IP ${{ steps.ip.outputs.ipv4 }} on $KV_NAME..."
             az keyvault network-rule add --name "$KV_NAME" --ip-address "${{ steps.ip.outputs.ipv4 }}"
-            echo "Waiting 45s for Azure Firewall propagation..."
-            sleep 45
+            echo "Waiting 60s for Azure Firewall propagation..."
+            sleep 60
           else
             echo "Key Vault '$KV_NAME' not found. This might be a fresh infra creation."
           fi
@@ -121,8 +121,8 @@ jobs:
           if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
             echo "Whitelisting IP ${{ steps.ip.outputs.ipv4 }} on $KV_NAME..."
             az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
-            echo "Waiting 45s for Azure Firewall propagation..."
-            sleep 45
+            echo "Waiting 60s for Azure Firewall propagation..."
+            sleep 60
           else
             echo "Key Vault '$KV_NAME' not found."
           fi
