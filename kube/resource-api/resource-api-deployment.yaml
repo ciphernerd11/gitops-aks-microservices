@@ -49,10 +49,6 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
-          volumeMounts:
-            - name: secrets-store-inline
-              mountPath: "/mnt/secrets-store"
-              readOnly: true
           livenessProbe:
             httpGet:
               path: /health
