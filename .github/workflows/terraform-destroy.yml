@@ -75,11 +75,13 @@ jobs:
 
       - name: Pre-Whitelist Runner IP (if Vault exists)
         run: |
-          if az keyvault show --name "kv-disasterreliefdev" &>/dev/null; then
-            az keyvault network-rule add --name "kv-disasterreliefdev" --ip-address "${{ steps.ip.outputs.ipv4 }}"
+          ENV_NAME="${{ github.event.inputs.environment || 'dev' }}"
+          KV_NAME="kv-disasterrelief${ENV_NAME}"
+          if az keyvault show --name "$KV_NAME" &>/dev/null; then
+            az keyvault network-rule add --name "$KV_NAME" --ip-address "${{ steps.ip.outputs.ipv4 }}"
             sleep 10
           else
-            echo "Key Vault 'kv-disasterreliefdev' not found. Skipping whitelisting."
+            echo "Key Vault '$KV_NAME' not found. Skipping whitelisting."
           fi
 
       - name: Terraform Destroy
