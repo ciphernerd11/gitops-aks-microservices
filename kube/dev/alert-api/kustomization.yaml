@@ -3,10 +3,10 @@ kind: Kustomization
 namespace: dev
 
 resources:
-  - ../../base/alert-api
+- ../../base/alert-api
 # - ../common
 
 images:
-  - name: acrdisasterreliefdev.azurecr.io/alert-api
-    newName: acrdisasterreliefdev.azurecr.io/alert-api
-    newTag: alert-api-d645a08b
+- name: acrdisasterreliefdev.azurecr.io/alert-api
+  newName: acrdisasterreliefdev.azurecr.io/alert-api
+  newTag: alert-api-b077bdc6
