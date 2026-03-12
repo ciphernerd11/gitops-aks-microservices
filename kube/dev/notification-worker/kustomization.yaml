@@ -3,9 +3,9 @@ kind: Kustomization
 namespace: dev
 
 resources:
-  - ../../base/notification-worker
+- ../../base/notification-worker
 # - ../common
 images:
-  - name: acrdisasterreliefdev.azurecr.io/notification-worker
-    newName: acrdisasterreliefdev.azurecr.io/notification-worker
-    newTag: notification-worker-d645a08b
+- name: acrdisasterreliefdev.azurecr.io/notification-worker
+  newName: acrdisasterreliefdev.azurecr.io/notification-worker
+  newTag: notification-worker-b077bdc6
