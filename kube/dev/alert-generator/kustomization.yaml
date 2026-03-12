@@ -3,9 +3,9 @@ kind: Kustomization
 namespace: dev
 
 resources:
-  - ../../base/alert-generator
+- ../../base/alert-generator
 # - ../common
 images:
-  - name: acrdisasterreliefdev.azurecr.io/alert-generator
-    newName: acrdisasterreliefdev.azurecr.io/alert-generator
-    newTag: alert-generator-d645a08b
+- name: acrdisasterreliefdev.azurecr.io/alert-generator
+  newName: acrdisasterreliefdev.azurecr.io/alert-generator
+  newTag: alert-generator-b077bdc6
