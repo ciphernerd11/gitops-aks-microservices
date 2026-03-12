@@ -5,3 +5,7 @@ namespace: dev
 resources:
 - ../../base/alert-generator
 - ../namespace.yaml
+images:
+- name: acrdisasterreliefdev.azurecr.io/alert-generator
+  newName: acrdisasterreliefdev.azurecr.io/alert-generator
+  newTag: alert-generator-21c71c99
