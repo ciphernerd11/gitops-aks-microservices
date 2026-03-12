@@ -64,30 +64,7 @@ resource "azurerm_role_assignment" "terraform_kv_admin" {
   principal_id         = data.azurerm_client_config.current.object_id
 }
 
-# --- INTEGRATED WAIT LOGIC START ---
-# This resource forces a pause to let Azure networking and RBAC sync.
-resource "terraform_data" "wait_for_access" {
-  input = azurerm_role_assignment.terraform_kv_admin.id
 
-  provisioner "local-exec" {
-    command = "sleep 60"
-  }
-
-  depends_on = [
-    azurerm_role_assignment.terraform_kv_admin,
-    azurerm_key_vault.kv
-  ]
-}
-# --- INTEGRATED WAIT LOGIC END ---
-
-resource "azurerm_key_vault_secret" "postgres_password" {
-  name         = "postgres-password"
-  value        = "Pass@123"
-  key_vault_id = azurerm_key_vault.kv.id
-
-  # Update this to depend on the wait resource instead of directly on the role
-  depends_on = [terraform_data.wait_for_access]
-}
 
 output "id" {
   value = azurerm_key_vault.kv.id
