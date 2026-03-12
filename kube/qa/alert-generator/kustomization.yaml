@@ -9,4 +9,4 @@ resources:
 images:
 - name: acrdisasterreliefdev.azurecr.io/alert-generator
   newName: acrdisasterreliefqa.azurecr.io/alert-generator
-  newTag: latest
+  newTag: alert-generator-d9e9259f
