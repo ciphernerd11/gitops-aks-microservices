@@ -3,10 +3,10 @@ kind: Kustomization
 namespace: dev
 
 resources:
-  - ../../base/resource-api
+- ../../base/resource-api
 # - ../common
 
 images:
-  - name: acrdisasterreliefdev.azurecr.io/resource-api
-    newName: acrdisasterreliefdev.azurecr.io/resource-api
-    newTag: resource-api-d645a08b
+- name: acrdisasterreliefdev.azurecr.io/resource-api
+  newName: acrdisasterreliefdev.azurecr.io/resource-api
+  newTag: resource-api-b077bdc6
