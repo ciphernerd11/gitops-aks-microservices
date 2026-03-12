@@ -20,4 +20,4 @@ patches:
 images:
 - name: acrdisasterreliefdev.azurecr.io/frontend
   newName: acrdisasterreliefdev.azurecr.io/frontend
-  newTag: frontend-b077bdc6
+  newTag: frontend-37da2518
