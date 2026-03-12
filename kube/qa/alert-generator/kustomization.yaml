@@ -4,7 +4,7 @@ namespace: qa
 
 resources:
 - ../../base/alert-generator
-- ../common
+# - ../common
 
 images:
 - name: acrdisasterreliefdev.azurecr.io/alert-generator

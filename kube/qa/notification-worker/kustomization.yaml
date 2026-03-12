@@ -4,7 +4,7 @@ namespace: qa
 
 resources:
 - ../../base/notification-worker
-- ../common
+# - ../common
 
 images:
 - name: acrdisasterreliefdev.azurecr.io/notification-worker

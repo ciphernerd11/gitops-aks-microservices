@@ -4,4 +4,4 @@ namespace: qa
 
 resources:
 - ../../base/redis
-- ../common
+# - ../common
