@@ -18,6 +18,8 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   version          = "5.46.7"
+  timeout          = 600
+  wait             = true
 
   set {
     name  = "server.extraArgs"
