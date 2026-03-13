@@ -4,23 +4,23 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/frontend/**'
-      - 'kube/dev/frontend/**'
-      - 'kube/base/frontend/**'
+      - "src/frontend/**"
+      - "kube/dev/frontend/**"
+      - "kube/base/frontend/**"
   pull_request:
     branches: [main]
     paths:
-      - 'src/frontend/**'
+      - "src/frontend/**"
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy to'
+        description: "Environment to deploy to"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options: [dev, qa, uat, prod]
       image_tag:
-        description: 'Image tag to promote (only for qa, uat, prod)'
+        description: "Image tag to promote (only for qa, uat, prod)"
         required: false
         type: string
 
@@ -47,12 +47,12 @@ jobs:
           docker build -t $REGISTRY/$SERVICE_NAME:$TAG ./src/$SERVICE_NAME
           docker push $REGISTRY/$SERVICE_NAME:$TAG
           echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
-      
+
       - name: Update Dev Manifest
         run: |
           cd kube/dev/$SERVICE_NAME
           kustomize edit set image $DEV_ACR.azurecr.io/$SERVICE_NAME=$DEV_ACR.azurecr.io/$SERVICE_NAME:$IMAGE_TAG
-      
+
       - name: Commit & Push
         run: |
           git config user.name "github-actions[bot]"
@@ -80,7 +80,7 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
+
       - name: Promote Image
         uses: ./.github/actions/promote-image
         with:
