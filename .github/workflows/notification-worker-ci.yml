@@ -5,8 +5,7 @@ on:
     branches: [main]
     paths:
       - 'src/notification-worker/**'
-      - 'kube/dev/notification-worker/**'
-      - 'kube/base/notification-worker/**'
+      - 'helm/values/dev-values/values-dev-notifications-worker.yaml'
   pull_request:
     branches: [main]
     paths:
@@ -25,7 +24,7 @@ on:
         type: string
 
 env:
-  SERVICE_NAME: notification-worker
+  SERVICE_NAME: notifications-worker
   DEV_ACR: acrdisasterreliefdev
   TARGET_ACR: acrdisasterrelief${{ github.event.inputs.environment || 'dev' }}
 
@@ -44,20 +43,20 @@ jobs:
         run: |
           TAG=$SERVICE_NAME-${GITHUB_SHA::8}
           REGISTRY=$DEV_ACR.azurecr.io
-          docker build -t $REGISTRY/$SERVICE_NAME:$TAG ./src/$SERVICE_NAME
+          docker build -t $REGISTRY/$SERVICE_NAME:$TAG ./src/notification-worker
           docker push $REGISTRY/$SERVICE_NAME:$TAG
           echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
       
       - name: Update Dev Manifest
         run: |
-          cd kube/dev/$SERVICE_NAME
-          kustomize edit set image $DEV_ACR.azurecr.io/$SERVICE_NAME=$DEV_ACR.azurecr.io/$SERVICE_NAME:$IMAGE_TAG
+          VALUES_FILE="helm/values/dev-values/values-dev-notifications-worker.yaml"
+          sed -i "s/tag: .*/tag: $IMAGE_TAG/" $VALUES_FILE
       
       - name: Commit & Push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add kube/
+          git add helm/values/dev-values/
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
@@ -94,7 +93,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add kube/
+          git add helm/values/
           git commit -m "ci: promote $SERVICE_NAME to ${{ github.event.inputs.environment }} with tag ${{ github.event.inputs.image_tag }} [skip ci]"
           for i in {1..5}; do
             git pull --rebase origin main

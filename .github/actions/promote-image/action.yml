@@ -42,15 +42,34 @@ runs:
           --image $targetImage `
           --force
 
-    - name: Update Kustomize Tag
+    - name: Update Helm Tag
       shell: pwsh
       run: |
-        $targetDir = "kube/${{ inputs.target_env }}/${{ inputs.service_name }}"
+        $targetEnv = "${{ inputs.target_env }}"
+        $serviceName = "${{ inputs.service_name }}"
+        $imageTag = "${{ inputs.image_tag }}"
         $targetRegistry = "${{ inputs.target_acr }}.azurecr.io"
-        $devRegistry = "${{ inputs.dev_acr }}.azurecr.io"
         
-        Write-Host "Updating manifest in $targetDir..."
-        cd $targetDir
+        # Determine the values file path
+        $valuesFile = "helm/values/$targetEnv-values/values-$targetEnv-$serviceName.yaml"
         
-        # We use kustomize to update the image tag and the registry name
-        kustomize edit set image "$devRegistry/${{ inputs.service_name }}=$targetRegistry/${{ inputs.service_name }}:${{ inputs.image_tag }}"
+        Write-Host "Updating Helm values in $valuesFile..."
+        
+        if (-not (Test-Path $valuesFile)) {
+            # Special case for notification-worker vs notifications-worker
+            if ($serviceName -eq "notification-worker") {
+                $valuesFile = "helm/values/$targetEnv-values/values-$targetEnv-notifications-worker.yaml"
+            }
+        }
+        
+        if (Test-Path $valuesFile) {
+            # Update the tag
+            (Get-Content $valuesFile) -replace "tag: .*", "tag: $imageTag" | Set-Content $valuesFile
+            
+            # Update the repository/registry if necessary
+            $content = Get-Content $valuesFile
+            $content -replace "repository: .*/", "repository: $targetRegistry/" | Set-Content $valuesFile
+        } else {
+            Write-Error "Values file not found: $valuesFile"
+            exit 1
+        }
