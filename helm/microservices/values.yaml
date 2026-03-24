@@ -24,11 +24,13 @@ resources:
     memory: 64Mi
 
 livenessProbe:
+  enabled: true
   path: /healthz
   initialDelaySeconds: 5
   periodSeconds: 15
 
 readinessProbe:
+  enabled: true
   path: /healthz
   initialDelaySeconds: 3
   periodSeconds: 10

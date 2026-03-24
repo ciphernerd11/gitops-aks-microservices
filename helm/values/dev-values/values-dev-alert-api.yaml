@@ -7,6 +7,12 @@ image:
   repository: acrdisasterreliefdev.azurecr.io/alert-api
   tag: alert-api-5c22437e
 
+livenessProbe:
+  path: /health
+
+readinessProbe:
+  path: /health
+
 ports:
   - containerPort: 8000
     servicePort: 8080

@@ -10,6 +10,12 @@ image:
 service:
   enabled: false
 
+livenessProbe:
+  enabled: false
+
+readinessProbe:
+  enabled: false
+
 env:
 - name: ALERT_API_URL
   value: "http://alert-api-service:8000"

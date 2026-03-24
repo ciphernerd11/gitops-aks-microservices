@@ -8,9 +8,15 @@ image:
   tag: resource-api-5c22437e
 
 ports:
-  - containerPort: 8080
+  - containerPort: 3000
     servicePort: 80
     name: http
+
+livenessProbe:
+  path: /health
+
+readinessProbe:
+  path: /health
   
 service:
   enabled: true

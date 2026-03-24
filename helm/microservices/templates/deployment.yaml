@@ -26,17 +26,21 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port | default 8080 }}
               protocol: TCP
+          {{- if (or .Values.livenessProbe.enabled (not (hasKey .Values.livenessProbe "enabled"))) }}
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.path | default "/healthz" }}
               port: http
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 5 }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 15 }}
+          {{- end }}
+          {{- if (or .Values.readinessProbe.enabled (not (hasKey .Values.readinessProbe "enabled"))) }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.path | default "/healthz" }}
               port: http
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 3 }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds | default 10 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
