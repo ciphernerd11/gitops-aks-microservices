@@ -1,10 +1,8 @@
 # Dev values override for frontend.
 
 replicaCount: 1
-
 image:
-  tag: frontend-ebfcd8c0
-
+  tag: frontend-eb60b976
 ingress:
   hosts:
     - host: dev.disaster-relief.com
