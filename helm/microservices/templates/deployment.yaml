@@ -1,3 +1,4 @@
+{{- if ne .Values.kind "CronJob" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,9 +24,17 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
+            {{- if .Values.ports }}
+            {{- range .Values.ports }}
+            - name: {{ .name | default "http" }}
+              containerPort: {{ .containerPort }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
+            {{- else }}
             - name: http
               containerPort: {{ .Values.service.port | default 8080 }}
               protocol: TCP
+            {{- end }}
           {{- if (or .Values.livenessProbe.enabled (not (hasKey .Values.livenessProbe "enabled"))) }}
           livenessProbe:
             httpGet:
@@ -44,3 +53,4 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+{{- end }}
