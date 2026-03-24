@@ -2,7 +2,7 @@
 
 replicaCount: 1
 image:
-  tag: frontend-eb60b976
+  tag: frontend-c145ef70
 ingress:
   hosts:
     - host: dev.disaster-relief.com
