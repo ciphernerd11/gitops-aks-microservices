@@ -10,7 +10,10 @@ spec:
   source:
     repoURL: https://github.com/ciphernerd11/gitops-aks-microservices.git
     targetRevision: main
-    path: kube/qa/resource-api/
+    path: helm/microservices
+    helm:
+      valueFiles:
+        - ../../helm/values/qa-values/values-qa-resource-api.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: qa

@@ -1,0 +1,18 @@
+# QA values override for frontend.
+
+replicaCount: 2
+
+image:
+  repository: acrdisasterreliefqa.azurecr.io/frontend
+  tag: "frontend-d9e9259f"
+
+ingress:
+  hosts:
+    - host: qa.disaster-relief.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: disaster-relief-tls
+      hosts:
+        - qa.disaster-relief.com

@@ -10,7 +10,10 @@ spec:
   source:
     repoURL: https://github.com/ciphernerd11/gitops-aks-microservices.git
     targetRevision: main
-    path: kube/dev/alert-generator/
+    path: helm/microservices
+    helm:
+      valueFiles:
+        - ../../helm/values/dev-values/values-dev-alert-generator.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: dev

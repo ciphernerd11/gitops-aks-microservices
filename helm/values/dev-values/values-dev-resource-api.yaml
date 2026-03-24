@@ -1,0 +1,38 @@
+kind: Deployment
+partOf: disaster-relief
+
+replicaCount: 2
+
+image:
+  repository: acrdisasterreliefdev.azurecr.io/resource-api
+  tag: resource-api-6b5d3f0b
+
+ports:
+  - containerPort: 8080
+    servicePort: 80
+    name: http
+  
+service:
+  enabled: true
+
+ingress:
+  enabled: false
+
+env:
+  - name: PGHOST
+    value: "postgres-service"
+  - name: PGUSER
+    value: "postgres"
+  - name: PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: POSTGRES_PASSWORD
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi

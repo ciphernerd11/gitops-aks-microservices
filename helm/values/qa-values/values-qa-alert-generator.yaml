@@ -1,0 +1,21 @@
+kind: CronJob
+partOf: disaster-relief
+schedule: "*/1 * * * *"
+concurrencyPolicy: Replace
+failedJobsHistoryLimit: 1
+
+image:
+  repository: acrdisasterreliefqa.azurecr.io/alert-generator
+  tag: alert-generator-6b5d3f0b
+
+service:
+  enabled: false
+
+env:
+  - name: API_URL
+    value: "http://alert-api-service:8000/alerts"
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 32Mi

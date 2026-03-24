@@ -10,7 +10,10 @@ spec:
   source:
     repoURL: https://github.com/ciphernerd11/gitops-aks-microservices.git
     targetRevision: main
-    path: kube/dev/notification-worker/
+    path: helm/microservices
+    helm:
+      valueFiles:
+        - ../../helm/values/dev-values/values-dev-notifications-worker.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: dev

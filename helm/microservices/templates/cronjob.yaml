@@ -1,0 +1,29 @@
+{{- if eq .Values.kind "CronJob" -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "microservices.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy | quote }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "microservices.selectorLabels" . | nindent 12 }}
+        spec:
+          containers:
+            - name: {{ .Release.Name }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "stable" }}"
+              {{- with .Values.env }}
+              env:
+                {{- toYaml . | nindent 12 }}
+              {{- end }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+          restartPolicy: {{ .Values.restartPolicy | default "OnFailure" }}
+{{- end }}
