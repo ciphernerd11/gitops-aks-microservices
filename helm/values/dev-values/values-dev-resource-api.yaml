@@ -1,29 +1,21 @@
 kind: Deployment
 partOf: disaster-relief
-
 replicaCount: 2
-
 image:
   repository: acrdisasterreliefdev.azurecr.io/resource-api
-  tag: resource-api-5c22437e
-
+  tag: resource-api-eb1e65bc
 ports:
   - containerPort: 3000
     servicePort: 80
     name: http
-
 livenessProbe:
   path: /health
-
 readinessProbe:
   path: /health
-  
 service:
   enabled: true
-
 ingress:
   enabled: false
-
 env:
   - name: PGHOST
     value: "postgres-service"
@@ -34,7 +26,6 @@ env:
       secretKeyRef:
         name: postgres-secret
         key: POSTGRES_PASSWORD
-
 resources:
   requests:
     cpu: 100m
