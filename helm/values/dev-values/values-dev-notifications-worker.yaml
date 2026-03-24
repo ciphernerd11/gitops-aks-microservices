@@ -6,6 +6,8 @@ image:
   tag: notifications-worker-eb1e65bc
 service:
   enabled: false
+ingress:
+  enabled: false
 livenessProbe:
   enabled: false
 readinessProbe:
