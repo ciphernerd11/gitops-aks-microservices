@@ -12,7 +12,7 @@ ingress:
   enabled: false
 env:
   - name: API_URL
-    value: "http://alert-api-service:8000/alerts"
+    value: "http://alert-api-dev-service:8080/alerts"
 resources:
   requests:
     cpu: 500m

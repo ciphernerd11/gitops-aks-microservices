@@ -14,7 +14,7 @@ readinessProbe:
   enabled: false
 env:
   - name: ALERT_API_URL
-    value: "http://alert-api-service:8000"
+    value: "http://alert-api-dev-service:8080"
   - name: POLL_INTERVAL
     value: "10s"
 resources:
