@@ -21,7 +21,7 @@ resource "azurerm_redis_cache" "main" {
   capacity            = 1
   family              = "C"
   sku_name            = "Standard"
-  enable_non_ssl_port = false
+  non_ssl_port_enabled = false
   minimum_tls_version = "1.2"
 
   tags = merge(var.tags, { Name = "redis-${var.resource_prefix}" })

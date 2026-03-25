@@ -89,10 +89,12 @@ resource "azurerm_container_app" "main" {
     identity = var.identity_id
   }
 
-  secret {
+  dynamic "secret" {
     for_each = { for s in var.secrets : s.name => s.value }
-    name     = each.key
-    value    = each.value
+    content {
+      name  = secret.key
+      value = secret.value
+    }
   }
 
   template {
