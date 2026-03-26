@@ -72,6 +72,7 @@ module "acr" {
   tags                = module.tags.tags
 }
 
+/*
 module "aks" {
   source                     = "./modules/aks"
   resource_prefix            = local.name_prefix
@@ -89,6 +90,7 @@ module "aks" {
   log_analytics_workspace_id = module.log_analytics.workspace_id
   tags                       = module.tags.tags
 }
+*/
 
 # ─────────────────────────────────────────────────────
 # 4. Azure Container Apps (ACA) — Target Platform
@@ -235,6 +237,7 @@ module "frontend" {
 # 7. GitOps & Application Configuration
 # ─────────────────────────────────────────────────────
 
+/*
 module "argocd" {
   source                     = "./modules/argocd"
   kubernetes_host            = module.aks.kubernetes_host
@@ -250,3 +253,4 @@ module "argocd" {
 
   depends_on = [module.aks]
 }
+*/

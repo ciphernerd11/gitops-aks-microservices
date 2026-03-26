@@ -12,6 +12,7 @@ output "acr_login_server" {
   value       = module.acr.login_server
 }
 
+/*
 output "aks_cluster_name" {
   description = "The name of the AKS cluster"
   value       = module.aks.cluster_name
@@ -21,6 +22,7 @@ output "aks_kube_config" {
   description = "Command to configure kubectl to connect to the new cluster"
   value       = "az aks get-credentials --resource-group ${azurerm_resource_group.main.name} --name ${module.aks.cluster_name}"
 }
+*/
 output "aca_environment_id" {
   description = "The ID of the Azure Container App Environment"
   value       = module.aca_environment.id
